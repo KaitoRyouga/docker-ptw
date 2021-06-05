@@ -854,6 +854,7 @@ return array(
     'Symfony\\Component\\Translation\\MessageCatalogue' => $vendorDir . '/symfony/translation/MessageCatalogue.php',
     'Symfony\\Component\\Translation\\MessageCatalogueInterface' => $vendorDir . '/symfony/translation/MessageCatalogueInterface.php',
     'Symfony\\Component\\Translation\\MetadataAwareInterface' => $vendorDir . '/symfony/translation/MetadataAwareInterface.php',
+    'Symfony\\Component\\Translation\\PluralizationRules' => $vendorDir . '/symfony/translation/PluralizationRules.php',
     'Symfony\\Component\\Translation\\Provider\\AbstractProviderFactory' => $vendorDir . '/symfony/translation/Provider/AbstractProviderFactory.php',
     'Symfony\\Component\\Translation\\Provider\\Dsn' => $vendorDir . '/symfony/translation/Provider/Dsn.php',
     'Symfony\\Component\\Translation\\Provider\\FilteringProvider' => $vendorDir . '/symfony/translation/Provider/FilteringProvider.php',
