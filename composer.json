@@ -7,16 +7,14 @@
             "app/Helpers/Helper.php"
         ]
     },
-    "require": {
-        "phpmailer/phpmailer": "^6.4",
-        "altorouter/altorouter": "^2.0",
-        "jenssegers/blade": "^1.4",
-        "vlucas/phpdotenv": "^5.2",
-        "illuminate/database": "^8.13"
-    },
-
     "config":{
         "optimize-autoloader": true
+    },
+    "require": {
+        "jenssegers/blade": "^1.4",
+        "vlucas/phpdotenv": "^5.3",
+        "illuminate/database": "^6.20.27",
+        "phpmailer/phpmailer": "^6.4",
+        "altorouter/altorouter": "^2.0"
     }
-
 }

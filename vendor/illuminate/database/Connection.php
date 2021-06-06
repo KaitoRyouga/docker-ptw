@@ -50,13 +50,6 @@ class Connection implements ConnectionInterface
     protected $database;
 
     /**
-     * The type of the connection.
-     *
-     * @var string|null
-     */
-    protected $type;
-
-    /**
      * The table prefix for the connection.
      *
      * @var string
@@ -118,13 +111,6 @@ class Connection implements ConnectionInterface
      * @var int
      */
     protected $transactions = 0;
-
-    /**
-     * The transaction manager instance.
-     *
-     * @var \Illuminate\Database\DatabaseTransactionsManager
-     */
-    protected $transactionsManager;
 
     /**
      * Indicates if changes have been made to the database.
@@ -341,9 +327,8 @@ class Connection implements ConnectionInterface
             // For select statements, we'll simply execute the query and return an array
             // of the database result set. Each element in the array will be a single
             // row from the database table, and will either be an array or objects.
-            $statement = $this->prepared(
-                $this->getPdoForSelect($useReadPdo)->prepare($query)
-            );
+            $statement = $this->prepared($this->getPdoForSelect($useReadPdo)
+                              ->prepare($query));
 
             $this->bindValues($statement, $this->prepareBindings($bindings));
 
@@ -591,8 +576,7 @@ class Connection implements ConnectionInterface
     {
         foreach ($bindings as $key => $value) {
             $statement->bindValue(
-                is_string($key) ? $key : $key + 1,
-                $value,
+                is_string($key) ? $key : $key + 1, $value,
                 is_int($value) ? PDO::PARAM_INT : PDO::PARAM_STR
             );
         }
@@ -875,16 +859,6 @@ class Connection implements ConnectionInterface
     }
 
     /**
-     * Reset the record modification state.
-     *
-     * @return void
-     */
-    public function forgetRecordModificationState()
-    {
-        $this->recordsModified = false;
-    }
-
-    /**
      * Is Doctrine available?
      *
      * @return bool
@@ -915,13 +889,7 @@ class Connection implements ConnectionInterface
      */
     public function getDoctrineSchemaManager()
     {
-        $connection = $this->getDoctrineConnection();
-
-        // Doctrine v2 expects one parameter while v3 expects two. 2nd will be ignored on v2...
-        return $this->getDoctrineDriver()->getSchemaManager(
-            $connection,
-            $connection->getDatabasePlatform()
-        );
+        return $this->getDoctrineDriver()->getSchemaManager($this->getDoctrineConnection());
     }
 
     /**
@@ -937,7 +905,7 @@ class Connection implements ConnectionInterface
             $this->doctrineConnection = new DoctrineConnection(array_filter([
                 'pdo' => $this->getPdo(),
                 'dbname' => $this->getDatabaseName(),
-                'driver' => method_exists($driver, 'getName') ? $driver->getName() : null,
+                'driver' => $driver->getName(),
                 'serverVersion' => $this->getConfig('server_version'),
             ]), $driver);
         }
@@ -1050,16 +1018,6 @@ class Connection implements ConnectionInterface
     public function getName()
     {
         return $this->getConfig('name');
-    }
-
-    /**
-     * Get the database connection full name.
-     *
-     * @return string|null
-     */
-    public function getNameWithReadWriteType()
-    {
-        return $this->getName().($this->readWriteType ? '::'.$this->readWriteType : '');
     }
 
     /**
@@ -1186,29 +1144,6 @@ class Connection implements ConnectionInterface
     }
 
     /**
-     * Set the transaction manager instance on the connection.
-     *
-     * @param  \Illuminate\Database\DatabaseTransactionsManager  $manager
-     * @return $this
-     */
-    public function setTransactionManager($manager)
-    {
-        $this->transactionsManager = $manager;
-
-        return $this;
-    }
-
-    /**
-     * Unset the transaction manager for this connection.
-     *
-     * @return void
-     */
-    public function unsetTransactionManager()
-    {
-        $this->transactionsManager = null;
-    }
-
-    /**
      * Determine if the connection is in a "dry run".
      *
      * @return bool
@@ -1287,19 +1222,6 @@ class Connection implements ConnectionInterface
     public function setDatabaseName($database)
     {
         $this->database = $database;
-
-        return $this;
-    }
-
-    /**
-     * Set the read / write type of the connection.
-     *
-     * @param  string|null  $readWriteType
-     * @return $this
-     */
-    public function setReadWriteType($readWriteType)
-    {
-        $this->readWriteType = $readWriteType;
 
         return $this;
     }
